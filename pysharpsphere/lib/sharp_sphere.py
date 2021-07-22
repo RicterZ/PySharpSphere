@@ -173,7 +173,7 @@ class SharpSphere(object):
                 print('[-] Error retrieving status of the process')
                 exit(1)
 
-            if process_info[0].exitCodeSpecified:
+            if process_info[0].exitCode:
                 file_manager = self.service_content.guestOperationsManager.fileManager
                 file_info = file_manager.InitiateFileTransferFromGuest(target_vm, credential, output)
                 print('[*] Command output:')
