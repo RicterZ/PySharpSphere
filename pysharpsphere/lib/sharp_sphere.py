@@ -174,6 +174,7 @@ class SharpSphere(object):
                 exit(1)
 
             if process_info[0].exitCode:
+                print('[*] Program exited, retrieving output ...')
                 file_manager = self.service_content.guestOperationsManager.fileManager
                 file_info = file_manager.InitiateFileTransferFromGuest(target_vm, credential, output)
                 print('[*] Command output:')
