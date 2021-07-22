@@ -169,7 +169,11 @@ class SharpSphere(object):
 
         while print_output:
             time.sleep(3)
-            process_info = process_manager.ListProcessesInGuest(target_vm, credential, [ret])
+            try:
+                process_info = process_manager.ListProcessesInGuest(target_vm, credential, [ret])
+            except Exception as e:
+                continue
+
             if len(process_info) == 0:
                 print('[-] Error retrieving status of the process')
                 exit(1)
