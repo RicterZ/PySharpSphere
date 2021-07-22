@@ -168,7 +168,7 @@ class SharpSphere(object):
         print('[+] Process start successfully with PID {}'.format(ret))
 
         while print_output:
-            process_info = process_manager.ListProcessesInGuest(target_vm, credential, [pid])
+            process_info = process_manager.ListProcessesInGuest(target_vm, credential, [ret])
             if len(process_info) == 0:
                 print('[-] Error retrieving status of the process')
                 exit(1)
