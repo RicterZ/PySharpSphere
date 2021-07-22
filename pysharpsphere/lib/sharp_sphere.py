@@ -168,6 +168,7 @@ class SharpSphere(object):
         print('[+] Process start successfully with PID {}'.format(ret))
 
         while print_output:
+            time.sleep(3)
             process_info = process_manager.ListProcessesInGuest(target_vm, credential, [ret])
             if len(process_info) == 0:
                 print('[-] Error retrieving status of the process')
@@ -177,6 +178,7 @@ class SharpSphere(object):
                 print('[*] Program exited, retrieving output ...')
                 file_manager = self.service_content.guestOperationsManager.fileManager
                 file_info = file_manager.InitiateFileTransferFromGuest(target_vm, credential, output)
+                print(file_info.url)
                 print('[*] Command output:')
                 print(requests.get(file_info.url).text)
                 break
