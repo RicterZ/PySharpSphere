@@ -18,7 +18,6 @@ from pyVmomi import SoapStubAdapter, vim
 def connect(args):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-    service_instance = None
     try:
         if args.user and args.password:
             service_instance = SmartConnect(host=args.host,
