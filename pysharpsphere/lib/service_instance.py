@@ -4,32 +4,46 @@ This module implements simple helper functions for managing service instance obj
 __author__ = "VMware, Inc."
 
 import atexit
-from pyVim.connect import SmartConnect, Disconnect
+import ssl
+
+try:
+    from pyvim.connect import SmartConnect, Disconnect, VimSessionOrientedStub
+except ImportError:
+    from pyVim.connect import SmartConnect, Disconnect, VimSessionOrientedStub
+
+from pyVmomi import SoapStubAdapter, vim
+
 
 
 def connect(args):
-    """
-    Determine the most preferred API version supported by the specified server,
-    then connect to the specified server using that API version, login and return
-    the service instance object.
-    """
+    ssl._create_default_https_context = ssl._create_unverified_context
 
     service_instance = None
-
-    # form a connection...
     try:
-        service_instance = SmartConnect(host=args.host,
-                                        user=args.user,
-                                        pwd=args.password,
-                                        port=args.port,
-                                        disableSslCertValidation=True)
+        if args.user and args.password:
+            service_instance = SmartConnect(host=args.host,
+                                            user=args.user,
+                                            pwd=args.password,
+                                            port=args.port,
+                                            disableSslCertValidation=True)
+        elif args.cert and args.key:
+            login = VimSessionOrientedStub.makeCertHokTokenLoginMethod(
+                'https://{}:{}/sts/STSService/vsphere.local'.format(args.host, args.port)
+            )
+            adapter = SoapStubAdapter(host=args.host, port=args.port, path='/sdk',
+                                      version='vim.version.version8',
+                                      certFile=args.cert, certKeyFile=args.key)
+            login(adapter)
+            service_instance = vim.ServiceInstance("ServiceInstance", adapter)
+        else:
+            raise Exception('invalid arguments')
 
-        # doing this means you don't need to remember to disconnect your script/objects
         atexit.register(Disconnect, service_instance)
-    except IOError as io_error:
-        print(io_error)
+    except Exception as e:
+        print('[-] Error: {}'.format(e))
+        raise e
 
     if not service_instance:
-        raise SystemExit("Unable to connect to host with supplied credentials.")
+        raise SystemExit("[-] Unable to connect to host with supplied credentials.")
 
     return service_instance
