@@ -1,8 +1,3 @@
-"""
-This module implements simple helper functions for managing service instance objects
-"""
-__author__ = "VMware, Inc."
-
 import atexit
 import ssl
 
@@ -12,7 +7,6 @@ except ImportError:
     from pyVim.connect import SmartConnect, Disconnect, VimSessionOrientedStub
 
 from pyVmomi import SoapStubAdapter, vim
-
 
 
 def connect(args):
@@ -27,7 +21,7 @@ def connect(args):
                                             disableSslCertValidation=True)
         elif args.cert and args.key:
             login = VimSessionOrientedStub.makeCertHokTokenLoginMethod(
-                'https://{}:{}/sts/STSService/vsphere.local'.format(args.host, args.port)
+                'https://{}:{}/sts/STSService/{}'.format(args.host, args.port, args.domain)
             )
             adapter = SoapStubAdapter(host=args.host, port=args.port, path='/sdk',
                                       version='vim.version.version8',

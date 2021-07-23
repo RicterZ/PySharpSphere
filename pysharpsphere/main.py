@@ -37,8 +37,10 @@ def main():
                         help='vCenter Server port')
     parser.add_argument('-u', '--username', action='store', dest='user', help='vCenter Server username')
     parser.add_argument('-p', '--password', action='store', dest='password', help='vCenter Server password')
-    parser.add_argument('--cert', action='store', dest='cert', help='certificate file')
-    parser.add_argument('--key', action='store', dest='key', help='private key file')
+    parser.add_argument('-c', '--cert', action='store', dest='cert', help='certificate file')
+    parser.add_argument('-k', '--key', action='store', dest='key', help='private key file')
+    parser.add_argument('-d', '--domain', action='store', dest='domain', default='vsphere.local',
+                        help='vCenter Server domain name')
 
     sub_parsers = parser.add_subparsers(help='sub-command')
 
